@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config>
-	<application type="SERVICEAGENT">
-		<workdir value="C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\" />
-		<webserverport value="8445" />
-	</application>
-	<serviceagent>
-	</serviceagent>
-</config>
