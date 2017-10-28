@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+	<application type="SERVICEAGENT">
+		<workdir value="C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\" />
+		<webserver host="localhost" port="8447" />
+		<keystore file="${application.workdir[@value]}\\etc\\keystore" passwd="OBF:1xms17jw1uuq1jg81jd21uvg17k21xmi" />
+	</application>
+	
+	<serviceagent name="SA000" cmhost="localhost" cmport="8445">
+		<service command="C:\Program Files\Java\jre1.8.0_92\bin\java" active="true">
+			<arg value="-classpath" />
+			<arg value="C:\Users\esteton\DEV\WS-OXYGEN\DDP\etc\;C:\Users\esteton\DEV\WS-OXYGEN\DDP\target\classes;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-cli-1.4.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-configuration2-2.1.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\log4j-1.2-api-2.9.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\log4j-api-2.9.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\log4j-core-2.9.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-lang3-3.6.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-logging-1.2.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-beanutils-1.9.3.jar" />
+			<arg value="it.ddp.main.Starter" />
+			<arg value="-x" />
+			<arg value="C:\Users\esteton\DEV\WS-OXYGEN\DDP\etc\producer00.xml" />
+		</service>
+		<service command="C:\Program Files\Java\jre1.8.0_92\bin\java" active="true">
+			<arg value="-classpath" />
+			<arg value="C:\Users\esteton\DEV\WS-OXYGEN\DDP\etc\;C:\Users\esteton\DEV\WS-OXYGEN\DDP\target\classes;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-cli-1.4.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-configuration2-2.1.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\log4j-1.2-api-2.9.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\log4j-api-2.9.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\log4j-core-2.9.1.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-lang3-3.6.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-logging-1.2.jar;C:\Users\esteton\DEV\WS-OXYGEN\DDP\lib\commons-beanutils-1.9.3.jar" />
+			<arg value="it.ddp.main.Starter" />
+			<arg value="-x" />
+			<arg value="C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\etc\\producer01.xml" />
+		</service>
+	</serviceagent>
+</config>

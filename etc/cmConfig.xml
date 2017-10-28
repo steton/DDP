@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+	<application type="CLUSTERMANAGER">
+		<workdir value="C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\" />
+		<webserver host="localhost" port="8445" />
+		<keystore file="${application.workdir[@value]}\\etc\\keystore" passwd="OBF:1xms17jw1uuq1jg81jd21uvg17k21xmi" />
+	</application>
+	
+	<clustermanager name="CM001">
+		<serviceagents>
+			<checks>
+				<pollingpolicy value="0/5 * * * * *" />
+				<pollingtimeout value="30000" />
+				<maxpollingretries value="3" />
+			</checks>
+			<agent>
+				<url value="https://localhost:8447/" />
+			</agent>
+			<agent>
+				<url value="https://localhost:8449/" />
+			</agent>
+		</serviceagents>
+	</clustermanager>
+</config>

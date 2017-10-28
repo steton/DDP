@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<application type="PRODUCER">
+		<workdir value="C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\" />
+		<webserver host="localhost" port="8451" />
+		<keystore file="${application.workdir[@value]}\\etc\\keystore" passwd="OBF:1xms17jw1uuq1jg81jd21uvg17k21xmi" />
+	</application>
+	<producer name="PR000" cmhost="localhost" cmport="8445">
+	</producer>
+</config>

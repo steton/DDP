@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configuration>
+
+<Configuration status="WARN" monitorInterval="300">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{YYYYMMdd_HHmmss.SSS} %-5level %logger{36} %L - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="it.ddp.applications.AbstractAgent" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.apache.http" level="error" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.apache.commons" level="error" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger name="org.eclipse.jetty" level="error" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Root level="debug">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>
