@@ -23,7 +23,12 @@ public class Consumer extends AbstractService {
 		startCommunicationServer();
 	}
 	
+	@Override
+	public ServiceType getType() {
+		return ServiceType.CONSUMER;
+	}
+	
 	private Logger log = null;
 	
-	public static final String TYPE = "CONSUMER";
+	public static final ServiceType TYPE = ServiceType.CONSUMER;
 }

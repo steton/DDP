@@ -7,9 +7,9 @@ import org.apache.log4j.Logger;
 import it.ddp.common.objects.ServiceStatusInfoInterface;
 import it.ddp.common.remote.RemoteConnector;
 import it.ddp.services.core.AbstractStrategy;
-import it.ddp.services.serviceagent.ServiceAgent;
+import it.ddp.services.core.AbstractService.ServiceType;
 
-public class ClusterManagerCheck extends AbstractStrategy implements ClusterManagerRemoteFunctions {
+public class ClusterManagerServiceCheck extends AbstractStrategy {
 
 	public enum AgentStatus {
 		OK,
@@ -22,10 +22,10 @@ public class ClusterManagerCheck extends AbstractStrategy implements ClusterMana
 		
 	};
 	
-	public ClusterManagerCheck(RemoteConnector rc, String intervallPolicies) throws Exception {
+	public ClusterManagerServiceCheck(RemoteConnector rc, String intervallPolicies) throws Exception {
 		super(rc, intervallPolicies);
 		
-		log = Logger.getLogger(ClusterManagerCheck.class);
+		log = Logger.getLogger(ClusterManagerServiceCheck.class);
 		
 		status = AgentStatus.UNKNOWN;
 		timeoutErrorAfterOkCount = -1;
@@ -41,7 +41,7 @@ public class ClusterManagerCheck extends AbstractStrategy implements ClusterMana
 		
 			if(el != null) {
 				log.debug(String.format("Connected to element '%s' of type '%s' with url '%s'", el.getName(), el.getType(), getConnector().getBaseURI()));
-				if(el.getType().equals(ServiceAgent.TYPE) ) {
+				if(el.getType().equals(ServiceType.SERVICEAGENT.getValue()) ) {
 					log.info(String.format("ServiceAgent '%s'", el.getName()));
 					status = AgentStatus.OK;
 					lastStatusObject = el;
@@ -137,4 +137,5 @@ public class ClusterManagerCheck extends AbstractStrategy implements ClusterMana
 
 	private Integer maxTimeoutErrorAfterOk = 3;
 	private Integer maxGenericErrorAfterOk = 3;
+	
 }

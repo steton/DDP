@@ -40,7 +40,38 @@ import it.ddp.main.Starter;
 
 public abstract class AbstractService {
 	
-	public AbstractService(File xmlConfigFile) throws ParseException, ConfigurationException, IOException {
+	
+	public enum ServiceType {
+		CLUSTERMANAGER("CLUSTERMANAGER"),
+		SERVICEAGENT("SERVICEAGENT"),
+		PRODUCER("PRODUCER"),
+		CONSUMER("CONSUMER");
+		
+		private ServiceType(String type) {
+			this.ServiceType = type;
+		}
+		
+		public String getValue() {
+			return this.ServiceType;
+		}
+		
+		public static ServiceType getServiceTypeByString(String t) {
+			if(t.equals(CLUSTERMANAGER.getValue()))
+				return CLUSTERMANAGER;
+			if(t.equals(SERVICEAGENT.getValue()))
+				return SERVICEAGENT;
+			if(t.equals(PRODUCER.getValue()))
+				return PRODUCER;
+			if(t.equals(CONSUMER.getValue()))
+				return CONSUMER;
+			return null;
+		}
+		
+		private String ServiceType = null;
+	};
+	
+	
+ 	public AbstractService(File xmlConfigFile) throws ParseException, ConfigurationException, IOException {
 		
 		log = Logger.getLogger(AbstractService.class);
 		
@@ -262,6 +293,7 @@ public abstract class AbstractService {
 	
 	
 	protected void startCommunicationServer() throws Exception {
+		startServiceSubscriber();
 		server.start();
 		server.join();
 	}
@@ -274,6 +306,23 @@ public abstract class AbstractService {
 	
 	public Integer getLocalWebSercivePort() {
 		return Integer.parseInt(serverServicePort);
+	}
+	
+	
+	abstract public ServiceType getType();
+	
+	
+	private void startServiceSubscriber() {
+		if(getType().equals(ServiceType.CLUSTERMANAGER)) {
+			log.debug("Service is a " + ServiceType.CLUSTERMANAGER.getValue() + ". Subscriber is not required.");
+			return;
+		}
+		
+		// ---------------------
+		// - Define a connector with ClusterManager and start a scheduler to periodically subscribe/update 
+		// -  this agent to ClusterManager.
+		
+		// ---------------------
 	}
 	
 

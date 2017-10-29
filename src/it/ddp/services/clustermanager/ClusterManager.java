@@ -32,7 +32,7 @@ public class ClusterManager extends AbstractService {
 		
 		log.debug("Activate cluster manager.");
 		
-		for(ClusterManagerCheck sac : serviceAgentList) {
+		for(ClusterManagerServiceCheck sac : serviceAgentList) {
 			sac.enable(true);
 		}
 		
@@ -67,7 +67,7 @@ public class ClusterManager extends AbstractService {
 	public void close() throws Exception {
 		log.debug(String.format("Stopping ClusterManager '%s'.", clusterName));
 		
-		for(ClusterManagerCheck sac : serviceAgentList) {
+		for(ClusterManagerServiceCheck sac : serviceAgentList) {
 			sac.enable(false);
 		}
 		
@@ -83,6 +83,11 @@ public class ClusterManager extends AbstractService {
 		*/
 		
 		log.debug(String.format("Plugin '%s' closed.", clusterName));
+	}
+	
+	@Override
+	public ServiceType getType() {
+		return ServiceType.CLUSTERMANAGER;
 	}
 	
 	// ------------------------------------------------------------------
@@ -116,7 +121,7 @@ public class ClusterManager extends AbstractService {
 				aU.getPort();
 				
 				RemoteConnector ck = new RemoteConnector(aU.getProtocol(), aU.getHost(), aU.getPort());
-				ClusterManagerCheck csac = new ClusterManagerCheck(ck, serviceAgentPollingPolicy);
+				ClusterManagerServiceCheck csac = new ClusterManagerServiceCheck(ck, serviceAgentPollingPolicy);
 				
 				log.debug(String.format("Register element with url '%s'", aU.toURI()));
 				serviceAgentList.add(csac);
@@ -128,7 +133,7 @@ public class ClusterManager extends AbstractService {
 		}
 		
 		System.setProperty("ews.name", clusterName);
-		System.setProperty("ews.type", "CLUSTERMANAGER");
+		System.setProperty("ews.type", TYPE.getValue());
 	}
 
 	private Logger log = null;
@@ -137,10 +142,10 @@ public class ClusterManager extends AbstractService {
 	private String serviceAgentPollingPolicy = null;
 	private Long serviceAgentPollingTimeout = null;
 	private Integer serviceAgentMaxPollingRetries = null;
-	private List<ClusterManagerCheck> serviceAgentList = null;
+	private List<ClusterManagerServiceCheck> serviceAgentList = null;
 	
 	
 	private Map<String, ServiceDescriptor> remoteServicesMap = null;
 
-	public static final String TYPE = "CLUSTERMANAGER";
+	public static final ServiceType TYPE = ServiceType.CLUSTERMANAGER;
 }

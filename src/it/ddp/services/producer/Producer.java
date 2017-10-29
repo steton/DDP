@@ -22,7 +22,11 @@ public class Producer extends AbstractService {
 		startCommunicationServer();
 	}
 	
+	@Override
+	public ServiceType getType() {
+		return ServiceType.PRODUCER;
+	}
+	
 	private Logger log = null;
 	
-	public static final String TYPE = "PRODUCER";
 }

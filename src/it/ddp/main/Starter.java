@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 
 import it.ddp.services.clustermanager.ClusterManager;
 import it.ddp.services.consumer.Consumer;
+import it.ddp.services.core.AbstractService.ServiceType;
 import it.ddp.services.producer.Producer;
 import it.ddp.services.serviceagent.ServiceAgent;
 
@@ -73,17 +74,20 @@ public class Starter {
 		
 		log.debug(String.format("Parsing required parameters"));
 		
-		String applicationType = config.getString("application[@type]", NONE_STRING);
-		if(applicationType==null || applicationType.equals(NONE_STRING)) {
-			ConfigurationException e = new ConfigurationException("Missing required parameter 'type' in tag 'application'.");
+		ServiceType applicationType = null;
+		try {
+			applicationType = ServiceType.valueOf(config.getString("application[@type]", NONE_STRING).trim().toUpperCase());
+		}
+		catch (IllegalArgumentException | NullPointerException e){
 			log.error(e);
 			throw e;
 		}
 		
+		String at = applicationType.getValue();
 		lookups.put("application[@type]", new Lookup() {	
 			@Override
 			public Object lookup(String arg0) {
-				return applicationType;
+				return at;
 			}
 		});
 		
@@ -169,16 +173,10 @@ public class Starter {
         addURL(etcDirFile.toURI().toURL());
         
         applicationClassMap = new HashMap<>(); 
-        applicationClassMap.put(ClusterManager.TYPE, ClusterManager.class);
-        applicationClassMap.put(Consumer.TYPE, Consumer.class);
-        applicationClassMap.put(Producer.TYPE, Producer.class);
-        applicationClassMap.put(ServiceAgent.TYPE, ServiceAgent.class);
-        
-        if(!applicationClassMap.containsKey(applicationType)) {
-        	ClassNotFoundException e = new ClassNotFoundException(String.format("Application type '%s' is not configurated.", applicationType));
-        	log.error(e);
-        	throw e;
-        }
+        applicationClassMap.put(ServiceType.CLUSTERMANAGER, ClusterManager.class);
+        applicationClassMap.put(ServiceType.CONSUMER, Consumer.class);
+        applicationClassMap.put(ServiceType.PRODUCER, Producer.class);
+        applicationClassMap.put(ServiceType.SERVICEAGENT, ServiceAgent.class);
         
         Class<?> agent = applicationClassMap.get(applicationType);
         try {
@@ -189,6 +187,8 @@ public class Starter {
 			throw e;
 		}
 	}
+	
+	
 	
 	/*
 	private static Class<?>[] getClasses(String packageName) throws ClassNotFoundException, IOException {
@@ -249,7 +249,7 @@ public class Starter {
 	
 	private Logger log = null;
 	
-	private Map<String, Class<?>> applicationClassMap = null;
+	private Map<ServiceType, Class<?>> applicationClassMap = null;
 	
 	private static final Class<?>[] parameters = new Class[]{URL.class};
 	public static final String NONE_STRING = "_#NONE#_";

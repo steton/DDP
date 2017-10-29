@@ -130,7 +130,12 @@ public class ServiceAgent extends AbstractService {
 		}
 		
 		System.setProperty("ews.name", serviceAgentName);
-		System.setProperty("ews.type", TYPE);
+		System.setProperty("ews.type", getType().getValue());
+	}
+	
+	@Override
+	public ServiceType getType() {
+		return ServiceType.SERVICEAGENT;
 	}
 	
 	private Logger log = null;
@@ -138,5 +143,7 @@ public class ServiceAgent extends AbstractService {
 	private List<ProcessDescriptor> agentsChilds = null;
 	
 	private String serviceAgentName = null;
-	public static final String TYPE = "SERVICEAGENT";
+
+	
+	
 }

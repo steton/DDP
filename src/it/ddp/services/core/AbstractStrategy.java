@@ -17,10 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.ddp.common.objects.ServiceStatusInfo;
 import it.ddp.common.objects.ServiceStatusInfoInterface;
+import it.ddp.common.remote.RemoteBaseFunctions;
 import it.ddp.common.remote.RemoteConnector;
-import it.ddp.services.clustermanager.ClusterManagerRemoteFunctions;
 
-public abstract class AbstractStrategy implements ClusterManagerRemoteFunctions {
+public abstract class AbstractStrategy implements RemoteBaseFunctions {
 
 	public AbstractStrategy(RemoteConnector rc, String intervallPolicies) throws Exception {
 		log = Logger.getLogger(AbstractStrategy.class);
@@ -47,6 +47,7 @@ public abstract class AbstractStrategy implements ClusterManagerRemoteFunctions 
 			}
 		}, 100, 200, TimeUnit.MILLISECONDS);
 	}
+
 	
 	abstract public void executeStrategy();
 
@@ -118,7 +119,6 @@ public abstract class AbstractStrategy implements ClusterManagerRemoteFunctions 
 		
 		return s;
 	}
-	
 	
 	
 	private boolean canSchedule() {
