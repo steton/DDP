@@ -1,4 +1,4 @@
-package it.ddp.applications;
+package it.ddp.services.core;
 
 public final class InternalProcessRegistry<T> {
 	

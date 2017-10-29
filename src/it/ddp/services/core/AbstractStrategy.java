@@ -1,4 +1,4 @@
-package it.ddp.applications;
+package it.ddp.services.core;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.ddp.common.objects.ServiceStatusInfo;
 import it.ddp.common.objects.ServiceStatusInfoInterface;
 import it.ddp.common.remote.RemoteConnector;
+import it.ddp.services.clustermanager.ClusterManagerRemoteFunctions;
 
 public abstract class AbstractStrategy implements ClusterManagerRemoteFunctions {
 

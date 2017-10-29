@@ -14,9 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import it.ddp.applications.AbstractService;
-import it.ddp.applications.InternalProcessRegistry;
 import it.ddp.common.objects.ServiceStatusInfo;
+import it.ddp.services.core.AbstractService;
+import it.ddp.services.core.InternalProcessRegistry;
 
 @Path("common")
 public class CommonFunctions {

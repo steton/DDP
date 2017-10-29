@@ -1,4 +1,4 @@
-package it.ddp.applications;
+package it.ddp.services.serviceagent;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +15,9 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.Executor;
 import org.apache.log4j.Logger;
+
+import it.ddp.services.core.AbstractService;
+import it.ddp.services.core.InternalProcessRegistry;
 
 public class ServiceAgent extends AbstractService {
 	

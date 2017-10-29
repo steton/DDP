@@ -25,10 +25,10 @@ import org.apache.commons.configuration2.interpol.ConfigurationInterpolator;
 import org.apache.commons.configuration2.interpol.Lookup;
 import org.apache.log4j.Logger;
 
-import it.ddp.applications.ClusterManager;
-import it.ddp.applications.Consumer;
-import it.ddp.applications.Producer;
-import it.ddp.applications.ServiceAgent;
+import it.ddp.services.clustermanager.ClusterManager;
+import it.ddp.services.consumer.Consumer;
+import it.ddp.services.producer.Producer;
+import it.ddp.services.serviceagent.ServiceAgent;
 
 public class Starter {
 	

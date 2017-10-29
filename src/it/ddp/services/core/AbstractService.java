@@ -1,4 +1,4 @@
-package it.ddp.applications;
+package it.ddp.services.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,9 +39,6 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import it.ddp.main.Starter;
 
 public abstract class AbstractService {
-	
-	//TEST
-	
 	
 	public AbstractService(File xmlConfigFile) throws ParseException, ConfigurationException, IOException {
 		

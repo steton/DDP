@@ -1,4 +1,4 @@
-package it.ddp.applications;
+package it.ddp.services.clustermanager;
 
 import java.util.concurrent.TimeoutException;
 
@@ -6,8 +6,10 @@ import org.apache.log4j.Logger;
 
 import it.ddp.common.objects.ServiceStatusInfoInterface;
 import it.ddp.common.remote.RemoteConnector;
+import it.ddp.services.core.AbstractStrategy;
+import it.ddp.services.serviceagent.ServiceAgent;
 
-public class ClusterServiceAgentCheck extends AbstractStrategy implements ClusterManagerRemoteFunctions {
+public class ClusterManagerCheck extends AbstractStrategy implements ClusterManagerRemoteFunctions {
 
 	public enum AgentStatus {
 		OK,
@@ -20,10 +22,10 @@ public class ClusterServiceAgentCheck extends AbstractStrategy implements Cluste
 		
 	};
 	
-	public ClusterServiceAgentCheck(RemoteConnector rc, String intervallPolicies) throws Exception {
+	public ClusterManagerCheck(RemoteConnector rc, String intervallPolicies) throws Exception {
 		super(rc, intervallPolicies);
 		
-		log = Logger.getLogger(ClusterServiceAgentCheck.class);
+		log = Logger.getLogger(ClusterManagerCheck.class);
 		
 		status = AgentStatus.UNKNOWN;
 		timeoutErrorAfterOkCount = -1;

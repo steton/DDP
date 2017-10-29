@@ -1,4 +1,4 @@
-package it.ddp.applications;
+package it.ddp.services.clustermanager;
 
 
 import java.io.File;
@@ -16,6 +16,9 @@ import org.apache.log4j.Logger;
 
 import it.ddp.common.objects.ServiceDescriptor;
 import it.ddp.common.remote.RemoteConnector;
+import it.ddp.services.core.AbstractService;
+import it.ddp.services.core.FunctionResult;
+import it.ddp.services.core.InternalProcessRegistry;
 
 
 public class ClusterManager extends AbstractService {
@@ -29,7 +32,7 @@ public class ClusterManager extends AbstractService {
 		
 		log.debug("Activate cluster manager.");
 		
-		for(ClusterServiceAgentCheck sac : serviceAgentList) {
+		for(ClusterManagerCheck sac : serviceAgentList) {
 			sac.enable(true);
 		}
 		
@@ -64,7 +67,7 @@ public class ClusterManager extends AbstractService {
 	public void close() throws Exception {
 		log.debug(String.format("Stopping ClusterManager '%s'.", clusterName));
 		
-		for(ClusterServiceAgentCheck sac : serviceAgentList) {
+		for(ClusterManagerCheck sac : serviceAgentList) {
 			sac.enable(false);
 		}
 		
@@ -113,7 +116,7 @@ public class ClusterManager extends AbstractService {
 				aU.getPort();
 				
 				RemoteConnector ck = new RemoteConnector(aU.getProtocol(), aU.getHost(), aU.getPort());
-				ClusterServiceAgentCheck csac = new ClusterServiceAgentCheck(ck, serviceAgentPollingPolicy);
+				ClusterManagerCheck csac = new ClusterManagerCheck(ck, serviceAgentPollingPolicy);
 				
 				log.debug(String.format("Register element with url '%s'", aU.toURI()));
 				serviceAgentList.add(csac);
@@ -134,7 +137,7 @@ public class ClusterManager extends AbstractService {
 	private String serviceAgentPollingPolicy = null;
 	private Long serviceAgentPollingTimeout = null;
 	private Integer serviceAgentMaxPollingRetries = null;
-	private List<ClusterServiceAgentCheck> serviceAgentList = null;
+	private List<ClusterManagerCheck> serviceAgentList = null;
 	
 	
 	private Map<String, ServiceDescriptor> remoteServicesMap = null;

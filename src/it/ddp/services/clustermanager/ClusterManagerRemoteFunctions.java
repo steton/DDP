@@ -1,4 +1,4 @@
-package it.ddp.applications;
+package it.ddp.services.clustermanager;
 
 import it.ddp.common.remote.RemoteBaseFunctions;
 

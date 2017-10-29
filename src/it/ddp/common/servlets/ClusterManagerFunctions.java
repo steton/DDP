@@ -9,11 +9,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import it.ddp.applications.ClusterManager;
-import it.ddp.applications.FunctionResult;
-import it.ddp.applications.InternalProcessRegistry;
 import it.ddp.common.objects.RemoteCallResult;
 import it.ddp.common.objects.ServiceDescriptor;
+import it.ddp.services.clustermanager.ClusterManager;
+import it.ddp.services.core.FunctionResult;
+import it.ddp.services.core.InternalProcessRegistry;
 
 @Path("cm")
 public class ClusterManagerFunctions {
