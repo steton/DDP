@@ -40,6 +40,8 @@ import it.ddp.main.Starter;
 
 public abstract class AbstractService {
 	
+	//TEST
+	
 	
 	public AbstractService(File xmlConfigFile) throws ParseException, ConfigurationException, IOException {
 		
