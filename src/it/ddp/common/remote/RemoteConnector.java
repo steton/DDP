@@ -19,6 +19,8 @@ import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -135,6 +137,46 @@ public class RemoteConnector {
 	
 	public String post(String service) throws InterruptedException, TimeoutException, ExecutionException, URISyntaxException, IOException {
 		return request(service, HttpMethod.POST);
+	}
+	
+	public String post(String service, String jsonInput) throws InterruptedException, TimeoutException, ExecutionException, URISyntaxException, IOException {
+		String responseBody = null;
+		
+		String urlService = service;
+		if(urlService == null || urlService.isEmpty()) {
+			log.debug("Service not specified. Apply default service.");
+			urlService = DEFAULT_URL_SERVICE;
+		}
+		
+		URL req = new URL(protocol, host, port, urlService);
+		
+		log.debug(String.format("Retrieve information from agent '%s'", req.toURI()));
+		
+		ContentResponse response = httpClient
+				.newRequest(req.toURI())
+				.followRedirects(false)
+				.method(HttpMethod.POST)
+				.header(HttpHeader.ACCEPT, "application/json")
+				.header(HttpHeader.CONTENT_TYPE, "application/json")
+				.content(new StringContentProvider(jsonInput), "application/json")
+				.timeout(1000, TimeUnit.MILLISECONDS)
+		        .send();
+		
+		log.debug(String.format("Request sent. '%s'", req.toURI()));
+		
+		if(response.getStatus() >= HttpStatus.OK_200 && response.getStatus() < HttpStatus.MOVED_PERMANENTLY_301) {
+			log.debug("Response status is " + HttpStatus.getMessage(response.getStatus()));
+			responseBody = new String(response.getContent());
+		}
+		else {
+			IOException e = new IOException("Unexpected response status: " + response.getStatus());
+			log.error(e);
+			response.abort(e);
+		}
+		
+		log.debug(responseBody);
+		return responseBody;
+        
 	}
 	
 	

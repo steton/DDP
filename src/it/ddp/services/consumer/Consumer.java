@@ -2,6 +2,8 @@ package it.ddp.services.consumer;
 
 import java.io.File;
 
+import org.apache.commons.configuration2.XMLConfiguration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.log4j.Logger;
 
 import it.ddp.services.core.AbstractService;
@@ -16,6 +18,7 @@ public class Consumer extends AbstractService {
 		log.debug("Consumer init...");
 		
 		configureWebServer();
+		configureConsumer();
 		
 		// do what needed
 		InternalProcessRegistry<Consumer> ir = InternalProcessRegistry.getInstance();
@@ -24,11 +27,36 @@ public class Consumer extends AbstractService {
 	}
 	
 	@Override
-	public ServiceType getType() {
+	public ServiceType getServiceType() {
 		return ServiceType.CONSUMER;
+	}
+	
+	@Override
+	public String getServiceName() {
+		return consumerName;
+	}
+	
+	@Override
+	public String getServiceClusterManagerHost() {
+		return consumerClusterManagerHost;
+	}
+
+	@Override
+	public Integer getServiceClusterManagerPort() {
+		return consumerClusterManagerPort;
+	}
+	
+	private void configureConsumer() throws ConfigurationException {
+		XMLConfiguration conf = getConfig();	
+		consumerName = conf.getString("consumer[@name]", NONE_STRING);
+		consumerClusterManagerHost = conf.getString("consumer[@cmhost]", NONE_STRING);
+		consumerClusterManagerPort = conf.getInteger("consumer[@cmport]", null);
 	}
 	
 	private Logger log = null;
 	
-	public static final ServiceType TYPE = ServiceType.CONSUMER;
+	private String consumerName = null;
+	private String consumerClusterManagerHost = null;
+	private Integer consumerClusterManagerPort = null;
+	
 }

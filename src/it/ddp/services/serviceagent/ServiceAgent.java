@@ -109,6 +109,8 @@ public class ServiceAgent extends AbstractService {
 		agentsChilds = new ArrayList<>();
 		
 		serviceAgentName = conf.getString("serviceagent[@name]", NONE_STRING);
+		serviceAgentClusterManagerHost = conf.getString("serviceagent[@cmhost]", NONE_STRING);
+		serviceAgentClusterManagerPort = conf.getInteger("serviceagent[@cmport]", null);
 		
 		List<HierarchicalConfiguration<ImmutableNode>> services = conf.configurationsAt("serviceagent.service");
 		for(HierarchicalConfiguration<ImmutableNode> service : services) {
@@ -130,12 +132,27 @@ public class ServiceAgent extends AbstractService {
 		}
 		
 		System.setProperty("ews.name", serviceAgentName);
-		System.setProperty("ews.type", getType().getValue());
+		System.setProperty("ews.type", getServiceType().getValue());
 	}
 	
 	@Override
-	public ServiceType getType() {
+	public ServiceType getServiceType() {
 		return ServiceType.SERVICEAGENT;
+	}
+	
+	@Override
+	public String getServiceName() {
+		return serviceAgentName;
+	}
+	
+	@Override
+	public String getServiceClusterManagerHost() {
+		return serviceAgentClusterManagerHost;
+	}
+
+	@Override
+	public Integer getServiceClusterManagerPort() {
+		return serviceAgentClusterManagerPort;
 	}
 	
 	private Logger log = null;
@@ -143,7 +160,7 @@ public class ServiceAgent extends AbstractService {
 	private List<ProcessDescriptor> agentsChilds = null;
 	
 	private String serviceAgentName = null;
-
-	
+	private String serviceAgentClusterManagerHost = null;
+	private Integer serviceAgentClusterManagerPort = null;
 	
 }

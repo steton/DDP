@@ -86,8 +86,23 @@ public class ClusterManager extends AbstractService {
 	}
 	
 	@Override
-	public ServiceType getType() {
+	public ServiceType getServiceType() {
 		return ServiceType.CLUSTERMANAGER;
+	}
+	
+	@Override
+	public String getServiceName() {
+		return clusterName;
+	}
+	
+	@Override
+	public String getServiceClusterManagerHost() {
+		return null;
+	}
+
+	@Override
+	public Integer getServiceClusterManagerPort() {
+		return null;
 	}
 	
 	// ------------------------------------------------------------------
@@ -133,7 +148,7 @@ public class ClusterManager extends AbstractService {
 		}
 		
 		System.setProperty("ews.name", clusterName);
-		System.setProperty("ews.type", TYPE.getValue());
+		System.setProperty("ews.type", getServiceType().getValue());
 	}
 
 	private Logger log = null;
@@ -147,5 +162,11 @@ public class ClusterManager extends AbstractService {
 	
 	private Map<String, ServiceDescriptor> remoteServicesMap = null;
 
-	public static final ServiceType TYPE = ServiceType.CLUSTERMANAGER;
+
+	
+
+
+	
+
+	
 }
