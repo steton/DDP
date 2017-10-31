@@ -355,6 +355,8 @@ public abstract class AbstractService {
 							ObjectMapper mapper = new ObjectMapper();
 							ServiceDescriptor sd = new ServiceDescriptor(getServiceName(), getServiceType().getValue(), getLocalWebServiceHost(), getLocalWebSercivePort(), new Long(System.currentTimeMillis()));
 							String jsonServiceDescriptor = mapper.writeValueAsString(sd);
+							
+							log.debug(String.format("JSON CONTENT: %s", jsonServiceDescriptor));
 							String jsonRegisterServiceResponse = rc.post("/servlet/cm/registerservice", jsonServiceDescriptor);
 							
 							RemoteCallResult rcr = null;
