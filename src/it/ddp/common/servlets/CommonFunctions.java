@@ -6,7 +6,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -21,7 +20,7 @@ import it.ddp.services.core.InternalProcessRegistry;
 @Path("common")
 public class CommonFunctions {
 	
-	@GET
+	@POST
 	@Path("info")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ServiceStatusInfo getInfo() {
@@ -202,14 +201,14 @@ public class CommonFunctions {
 	}
 	
   
-	@GET
+	@POST
 	@Path("param")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String paramMethod(@QueryParam("name") String name) {
 		return "Hello, " + name;
 	}
 	  
-	@GET
+	@POST
 	@Path("path/{var}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String pathMethod(@PathParam("var") String name) {

@@ -61,6 +61,12 @@ public class ServiceDescriptor implements ServiceDescriptorInterface {
 	public void setLastUpdateTime(Long lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return String.format("{\"name\":\"%s\", \"type\":\"%s\", \"webServerHost\":\"%s\", \"webServerPort\":%d, \"lastUpdateTime\":%d}", name, type, webServerHost, webServerPort, lastUpdateTime);
+	}
 
 
 

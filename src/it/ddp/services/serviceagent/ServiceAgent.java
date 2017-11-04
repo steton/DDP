@@ -100,6 +100,8 @@ public class ServiceAgent extends AbstractService {
 		InternalProcessRegistry<ServiceAgent> ir = InternalProcessRegistry.getInstance();
 		ir.subscribeAgent(this);
 		
+		startInternalServices();
+		
         startCommunicationServer();
 	}
 	
@@ -153,6 +155,12 @@ public class ServiceAgent extends AbstractService {
 	@Override
 	public Integer getServiceClusterManagerPort() {
 		return serviceAgentClusterManagerPort;
+	}
+	
+	@Override
+	protected void executeServiceStrategy() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	private Logger log = null;

@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,7 +18,7 @@ import it.ddp.services.core.InternalProcessRegistry;
 @Path("cm")
 public class ClusterManagerFunctions {
 
-	@GET
+	@POST
 	@Path("servicelist")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<ServiceDescriptor> getServiceList() {

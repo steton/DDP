@@ -1,4 +1,4 @@
-package it.ddp.services.core;
+package it.ddp.services.clustermanager;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -85,7 +85,7 @@ public abstract class AbstractStrategy implements RemoteBaseFunctions {
 		
 		try {
 			log.info(String.format("Retreive information from '%s'", r.getBaseURI().toString()));
-			json = r.get("/servlet/common/info");
+			json = r.post("/servlet/common/info", "");
 		}
 		catch (URISyntaxException | IOException | InterruptedException | TimeoutException | ExecutionException e) {
 			log.error(e);

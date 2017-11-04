@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyStoreException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -27,11 +28,6 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 
 public class RemoteConnector {
-	
-	enum RequestType {
-		GET,
-		POST;
-	}
 	
 	public RemoteConnector(String protocol, String host, Integer port, String keyStore, String keyStorePassword) throws Exception {
 		this.protocol = protocol;
@@ -93,7 +89,7 @@ public class RemoteConnector {
         httpClient.start();
 	}
 	
-	
+	/*
 	private String request(String service, HttpMethod t) throws URISyntaxException, IOException, InterruptedException, TimeoutException, ExecutionException {
 		String responseBody = null;
 		
@@ -139,6 +135,8 @@ public class RemoteConnector {
 		return request(service, HttpMethod.POST);
 	}
 	
+	*/
+	
 	public String post(String service, String jsonInput) throws InterruptedException, TimeoutException, ExecutionException, URISyntaxException, IOException {
 		String responseBody = null;
 		
@@ -152,13 +150,14 @@ public class RemoteConnector {
 		
 		log.debug(String.format("Retrieve information from agent '%s'", req.toURI()));
 		
+		StringContentProvider cnt = new StringContentProvider("application/json", jsonInput, Charset.defaultCharset());
+		
 		ContentResponse response = httpClient
 				.newRequest(req.toURI())
 				.followRedirects(false)
 				.method(HttpMethod.POST)
-				.header(HttpHeader.ACCEPT, "application/json")
 				.header(HttpHeader.CONTENT_TYPE, "application/json")
-				.content(new StringContentProvider(jsonInput), "application/json")
+				.content(cnt)
 				.timeout(1000, TimeUnit.MILLISECONDS)
 		        .send();
 		
@@ -227,7 +226,7 @@ public class RemoteConnector {
 		options.addOption("s", "service", true, "Request service");
 		options.addOption("f", "keystore", true, "KeyStore file");
 		options.addOption("w", "password", true, "KeyStore password");
-		options.addOption("m", "method", false, "Request methos (default get)");
+		options.addOption("d", "data", false, "Data to be send");
 		
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = parser.parse( options, args);
@@ -254,21 +253,13 @@ public class RemoteConnector {
 		String service = cmd.getOptionValue("s");
 		String keystore = cmd.getOptionValue("f");
 		String password = cmd.getOptionValue("w");
-		String method = (cmd.getOptionValue("m") == null) ? "GET" : cmd.getOptionValue("m").toUpperCase().trim();
+		String data = cmd.getOptionValue("d");
 		
 		
 		RemoteConnector hc = new RemoteConnector(protocol, host, port, keystore, password);
 		
 		for(int i=0; i < 1; i++) {
-			if(method.equals("GET")) {
-				hc.get(service);
-			}
-			else if(method.equals("POST")) {
-				hc.post(service);
-			}
-			else {
-				System.err.printf("Unknown method '%s'\n", method);
-			}
+			hc.post(service, data);
 		}
 		
 		hc.close();

@@ -22,6 +22,8 @@ public class Producer extends AbstractService {
 		// do what needed
 		InternalProcessRegistry<Producer> ir = InternalProcessRegistry.getInstance();
 		ir.subscribeAgent(this);
+		
+		startInternalServices();
 		startCommunicationServer();
 	}
 	
@@ -45,6 +47,12 @@ public class Producer extends AbstractService {
 		return producerClusterManagerPort;
 	}
 	
+	@Override
+	protected void executeServiceStrategy() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	private void configureProducer() throws ConfigurationException {
 		XMLConfiguration conf = getConfig();	
 		producerName = conf.getString("producer[@name]", NONE_STRING);
@@ -57,5 +65,6 @@ public class Producer extends AbstractService {
 	private String producerName = null;
 	private String producerClusterManagerHost = null;
 	private Integer producerClusterManagerPort = null;
+	
 	
 }

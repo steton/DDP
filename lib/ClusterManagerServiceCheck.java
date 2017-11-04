@@ -6,35 +6,24 @@ import org.apache.log4j.Logger;
 
 import it.ddp.common.objects.ServiceStatusInfoInterface;
 import it.ddp.common.remote.RemoteConnector;
-import it.ddp.services.core.AbstractStrategy;
+import it.ddp.services.core.AbstractService.ServiceStatus;
 import it.ddp.services.core.AbstractService.ServiceType;
 
 public class ClusterManagerServiceCheck extends AbstractStrategy {
-
-	public enum AgentStatus {
-		OK,
-		OK_CONN_TIMEOUT,
-		NOK_CONNECTION_TIMEOUT,
-		OK_GEN_ERROR,
-		NOK_GEN_ERROR,
-		INVALID_AGENT_TYPE,
-		UNKNOWN;
-		
-	};
 	
 	public ClusterManagerServiceCheck(RemoteConnector rc, String intervallPolicies) throws Exception {
 		super(rc, intervallPolicies);
 		
 		log = Logger.getLogger(ClusterManagerServiceCheck.class);
 		
-		status = AgentStatus.UNKNOWN;
+		status = ServiceStatus.UNKNOWN;
 		timeoutErrorAfterOkCount = -1;
 		genericErrorAfterOkCount = -1;
 	}
 
 	@Override
 	public void executeStrategy() {
-		if(status.equals(AgentStatus.INVALID_AGENT_TYPE))
+		if(status.equals(ServiceStatus.INVALID_SERVICE_STATUS))
 			return;
 		try {
 			ServiceStatusInfoInterface el = getServiceStatus(getConnector());
@@ -43,13 +32,13 @@ public class ClusterManagerServiceCheck extends AbstractStrategy {
 				log.debug(String.format("Connected to element '%s' of type '%s' with url '%s'", el.getName(), el.getType(), getConnector().getBaseURI()));
 				if(el.getType().equals(ServiceType.SERVICEAGENT.getValue()) ) {
 					log.info(String.format("ServiceAgent '%s'", el.getName()));
-					status = AgentStatus.OK;
+					status = ServiceStatus.OK;
 					lastStatusObject = el;
 					timeoutErrorAfterOkCount = 0;
 				}
 				else {
 					lastStatusObject = null;
-					status = AgentStatus.INVALID_AGENT_TYPE;
+					status = ServiceStatus.INVALID_SERVICE_STATUS;
 					log.info(String.format("Element '%s' is not a '%s'. Skip.", el.getName(), el.getType()));
 				}
 			}
@@ -70,22 +59,22 @@ public class ClusterManagerServiceCheck extends AbstractStrategy {
 		
 		if(timeoutErrorAfterOkCount > 0) {
 			if(timeoutErrorAfterOkCount <= maxTimeoutErrorAfterOk) {
-				status = AgentStatus.OK_CONN_TIMEOUT;
+				status = ServiceStatus.OK_CONN_TIMEOUT;
 				log.debug(String.format("Status change to '%s' (count %d)", status.name(), timeoutErrorAfterOkCount));
 			}
 			else {
-				status = AgentStatus.NOK_CONNECTION_TIMEOUT;
+				status = ServiceStatus.NOK_CONNECTION_TIMEOUT;
 				log.debug(String.format("Status change to '%s'", status.name()));
 			}
 		}
 		
 		if(genericErrorAfterOkCount > 0) {
 			if(genericErrorAfterOkCount <= maxGenericErrorAfterOk) {
-				status = AgentStatus.OK_GEN_ERROR;
+				status = ServiceStatus.OK_GEN_ERROR;
 				log.debug(String.format("Status change to '%s' (count %d)", status.name(), timeoutErrorAfterOkCount));
 			}
 			else {
-				status = AgentStatus.NOK_GEN_ERROR;
+				status = ServiceStatus.NOK_GEN_ERROR;
 				genericErrorAfterOkCount = maxGenericErrorAfterOk;
 				log.debug(String.format("Status change to '%s'", status.name()));
 			}
@@ -94,7 +83,7 @@ public class ClusterManagerServiceCheck extends AbstractStrategy {
 		log.info(String.format("%s status is '%s'", getRemoteServiceName(), status.name()));
 	}
 	
-	public AgentStatus getStatus() {
+	public ServiceStatus getStatus() {
 		return status;
 	}
 	
@@ -129,7 +118,7 @@ public class ClusterManagerServiceCheck extends AbstractStrategy {
 	
 	private Logger log = null;
 	
-	private AgentStatus status = null;
+	private ServiceStatus status = null;
 	private Integer timeoutErrorAfterOkCount = null;
 	private Integer genericErrorAfterOkCount = null;
 	
