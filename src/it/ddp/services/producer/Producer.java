@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import it.ddp.services.core.AbstractService;
 import it.ddp.services.core.InternalProcessRegistry;
 
+
 public class Producer extends AbstractService {
 	
 	public Producer(File xmlConfigFile) throws Exception {
@@ -47,6 +48,21 @@ public class Producer extends AbstractService {
 	
 	@Override
 	protected void configureService() throws ConfigurationException {
+		
+		/*
+		
+		<producer name="PR000" cmhost="localhost" cmport="8445">
+			<plugin class="">
+				<queue name="QPR01" objecttimeout="30000" maxobjects="10000" />
+					<parameters>
+				 		<parameter name="" value="" />
+				 	</parameters>
+			</plugin> 
+		</producer>
+		
+		 */
+		
+		
 		XMLConfiguration conf = getConfig();	
 		producerName = conf.getString("producer[@name]", NONE_STRING);
 		producerClusterManagerHost = conf.getString("producer[@cmhost]", NONE_STRING);
