@@ -33,14 +33,11 @@ public class ClusterManager extends AbstractService {
 		log = Logger.getLogger(ClusterManager.class);
 		
 		configureWebServer();
-		configureClusterManager();
 		
 		InternalProcessRegistry<ClusterManager> ir = InternalProcessRegistry.getInstance();
 		ir.subscribeAgent(this);
 		
 		startInternalServices();
-		
-		startCommunicationServer();
 	}
 	
 	
@@ -111,79 +108,9 @@ public class ClusterManager extends AbstractService {
 		return null;
 	}
 	
+	
 	@Override
-	protected void executeServiceStrategy() {
-		log.debug("Activate cluster manager.");
-		
-		try {
-			//Every 5 seconds a task check is some new service is connected to Cluster manager
-			newServiceCheckScheduler = new SchedulerUtil(newServiceCheckSchedulerPolicy, () -> {
-				Long nowTs = System.currentTimeMillis();
-				
-				log.debug("Check for service status updating.");
-				for(String connServ : remoteServicesMap.keySet()) {
-					ServiceDescriptorInterface sd = (ServiceDescriptorInterface)remoteServicesMap.get(connServ);
-					if(!registeredServicesMap.containsKey(connServ)) {
-						log.info(String.format("Found new connected service '%s'", connServ));
-						registeredServicesMap.put(connServ,new RemoteConnector("https", sd.getWebServerHost(), sd.getWebServerPort()));
-						registeredServiceStatusMap.put(connServ, ServiceStatus.NOT_YET_CONFIGURED_IN_CLUSTERMANAGER);
-						schedulerServicesMap.put(connServ, new SchedulerUtil(serviceAgentPollingPolicy, () -> {
-							log.info(String.format("Start ClusterManager check task for service '%s'", connServ));
-							try {
-								RemoteConnector rc = registeredServicesMap.get(connServ);
-								ServiceStatusInfoInterface el = getServiceStatus(rc);
-								
-								if(el != null) {
-									log.debug(String.format("Connected to element '%s' of type '%s' with url '%s'", el.getName(), el.getType(), rc.getBaseURI()));
-									registeredServiceStatusMap.put(connServ, ServiceStatus.OK);
-								}
-								else {
-									registeredServiceStatusMap.put(connServ, ServiceStatus.INVALID_SERVICE_STATUS);
-								}
-							}
-							catch(TimeoutException e) {
-								log.error(e);
-								registeredServiceStatusMap.put(connServ, ServiceStatus.NOK_CONNECTION_TIMEOUT);
-								
-							}
-							catch (Exception e) {
-								log.error(e);
-								registeredServiceStatusMap.put(connServ, ServiceStatus.NOK_GEN_ERROR);
-							}
-							
-							log.info(String.format("%s status is '%s'", connServ, registeredServiceStatusMap.get(connServ).name()));
-						}));
-						schedulerServicesMap.get(connServ).enable(true);
-					}
-					if(nowTs - sd.getLastUpdateTime() > serviceAgentPollingTimeout) {
-						log.info(String.format("Agent '%s' doesn't update its status from %d ms.", connServ, nowTs - sd.getLastUpdateTime()));
-						registeredServiceStatusMap.put(connServ, ServiceStatus.NOK_CONNECTION_TIMEOUT);
-					}
-				}
-			});
-			newServiceCheckScheduler.enable(true);
-			
-			new SchedulerUtil(newServiceCheckSchedulerPolicy, () -> {
-				try {
-					for(String s : registeredServiceStatusMap.keySet()) {
-						log.info(String.format("Service '%s' has status '%s'", s, registeredServiceStatusMap.get(s).name()));
-					}
-				}
-				catch(Exception e) {
-					log.error(e);
-				}
-			}).enable(true);
-		}
-		catch (Exception e) {
-			log.fatal(e);
-		}
-	}
-	
-	// ------------------------------------------------------------------
-	// -- P R I V A T E   M E T H O D S ---------------------------------
-	// ------------------------------------------------------------------	
-	
-	private void configureClusterManager() throws Exception {
+	protected void configureService() throws Exception {
 		XMLConfiguration conf = getConfig();
 		
 		remoteServicesMap = new HashMap<>();
@@ -229,6 +156,114 @@ public class ClusterManager extends AbstractService {
 		System.setProperty("ews.name", clusterName);
 		System.setProperty("ews.type", getServiceType().getValue());
 	}
+	
+	
+	@Override
+	protected void executeServiceStrategy() {
+		log.debug("Activate cluster manager.");
+		
+		try {
+			//Every 5 seconds a task check is some new service is connected to Cluster manager
+			newServiceCheckScheduler = makeServiceValidationScheduler();
+			newServiceCheckScheduler.enable(true);
+			
+			//Every 5 seconds a task print service status subscribed on Cluster manager
+			makeServicePrintStatusScheduler().enable(true);
+		}
+		catch (Exception e) {
+			log.fatal(e);
+		}
+	}
+	
+	// ------------------------------------------------------------------
+	// -- P R I V A T E   M E T H O D S ---------------------------------
+	// ------------------------------------------------------------------
+	
+	/**
+	 * Private function that produce a schedulerUtil object that supervise a remote service subscribed and update the status of service, 
+	 *  saving remote service platform information.
+	 *  
+	 * @param serviceName
+	 * @return SchedulerUtil object
+	 * @throws Exception
+	 */
+	private SchedulerUtil makeServiceSupervisorScheduler(String serviceName) throws Exception {
+		return new SchedulerUtil(serviceAgentPollingPolicy, () -> {
+			log.info(String.format("Start ClusterManager check task for service '%s'", serviceName));
+			try {
+				RemoteConnector rc = registeredServicesMap.get(serviceName);
+				ServiceStatusInfoInterface el = getServiceStatus(rc);
+				
+				if(el != null) {
+					log.debug(String.format("Connected to element '%s' of type '%s' with url '%s'", el.getName(), el.getType(), rc.getBaseURI()));
+					registeredServiceStatusMap.put(serviceName, ServiceStatus.OK);
+				}
+				else {
+					registeredServiceStatusMap.put(serviceName, ServiceStatus.INVALID_SERVICE_STATUS);
+				}
+			}
+			catch(TimeoutException e) {
+				log.error(e);
+				registeredServiceStatusMap.put(serviceName, ServiceStatus.NOK_CONNECTION_TIMEOUT);
+				
+			}
+			catch (Exception e) {
+				log.error(e);
+				registeredServiceStatusMap.put(serviceName, ServiceStatus.NOK_GEN_ERROR);
+			}
+			
+			log.info(String.format("%s status is '%s'", serviceName, registeredServiceStatusMap.get(serviceName).name()));
+		});
+	}
+	
+	
+	/**
+	 * Private function that produce a schedulerUtil object to check the change of new services subscribed on ClusterManager.
+	 * @return SchedulerUtil object
+	 * @throws Exception
+	 */
+	private SchedulerUtil makeServiceValidationScheduler() throws Exception {
+		return new SchedulerUtil(newServiceCheckSchedulerPolicy, () -> {
+			Long nowTs = System.currentTimeMillis();
+			
+			log.debug("Check for service status updating.");
+			for(String connServ : remoteServicesMap.keySet()) {
+				ServiceDescriptorInterface sd = (ServiceDescriptorInterface)remoteServicesMap.get(connServ);
+				if(!registeredServicesMap.containsKey(connServ)) {
+					log.info(String.format("Found new connected service '%s'", connServ));
+					registeredServicesMap.put(connServ,new RemoteConnector("https", sd.getWebServerHost(), sd.getWebServerPort()));
+					registeredServiceStatusMap.put(connServ, ServiceStatus.NOT_YET_CONFIGURED_IN_CLUSTERMANAGER);
+					schedulerServicesMap.put(connServ, makeServiceSupervisorScheduler(connServ));
+					schedulerServicesMap.get(connServ).enable(true);
+				}
+				if(nowTs - sd.getLastUpdateTime() > serviceAgentPollingTimeout) {
+					log.info(String.format("Agent '%s' doesn't update its status from %d ms.", connServ, nowTs - sd.getLastUpdateTime()));
+					registeredServiceStatusMap.put(connServ, ServiceStatus.NOK_CONNECTION_TIMEOUT);
+				}
+			}
+		});
+	}
+	
+	
+	/**
+	 * Private function that print the status of subscribed services in ClusterManager.
+	 * @return SchedulerUtil object
+	 * @throws Exception
+	 */
+	private SchedulerUtil makeServicePrintStatusScheduler() throws Exception {
+		return new SchedulerUtil(newServiceCheckSchedulerPolicy, () -> {
+			try {
+				for(String s : registeredServiceStatusMap.keySet()) {
+					log.info(String.format("Service '%s' has status '%s'", s, registeredServiceStatusMap.get(s).name()));
+				}
+			}
+			catch(Exception e) {
+				log.error(e);
+			}
+		});
+	}
+	
+	
 	
 	
 	private ServiceStatusInfoInterface getServiceStatus(RemoteConnector r) throws URISyntaxException, IOException,  InterruptedException, TimeoutException, ExecutionException {

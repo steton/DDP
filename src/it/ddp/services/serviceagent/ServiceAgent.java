@@ -84,6 +84,7 @@ public class ServiceAgent extends AbstractService {
 		private Boolean enabled = null;
 	}
 
+	
 	public ServiceAgent(File xmlConfigFile) throws Exception {
 		super(xmlConfigFile);
 		
@@ -91,21 +92,38 @@ public class ServiceAgent extends AbstractService {
 		log.debug("ServiceAgent init...");
 		
 		configureWebServer();
-		configureServiceAgent();
-		
-		for(ProcessDescriptor p : agentsChilds) {
-			p.execute();
-		}
 		
 		InternalProcessRegistry<ServiceAgent> ir = InternalProcessRegistry.getInstance();
 		ir.subscribeAgent(this);
 		
 		startInternalServices();
-		
-        startCommunicationServer();
 	}
 	
-	private void configureServiceAgent() throws ConfigurationException {
+	
+	
+	@Override
+	public ServiceType getServiceType() {
+		return ServiceType.SERVICEAGENT;
+	}
+	
+	@Override
+	public String getServiceName() {
+		return serviceAgentName;
+	}
+	
+	@Override
+	public String getServiceClusterManagerHost() {
+		return serviceAgentClusterManagerHost;
+	}
+
+	@Override
+	public Integer getServiceClusterManagerPort() {
+		return serviceAgentClusterManagerPort;
+	}
+	
+	
+	@Override
+	protected void configureService() throws ConfigurationException {
 		XMLConfiguration conf = getConfig();
 		
 		agentsChilds = new ArrayList<>();
@@ -137,30 +155,12 @@ public class ServiceAgent extends AbstractService {
 		System.setProperty("ews.type", getServiceType().getValue());
 	}
 	
-	@Override
-	public ServiceType getServiceType() {
-		return ServiceType.SERVICEAGENT;
-	}
-	
-	@Override
-	public String getServiceName() {
-		return serviceAgentName;
-	}
-	
-	@Override
-	public String getServiceClusterManagerHost() {
-		return serviceAgentClusterManagerHost;
-	}
-
-	@Override
-	public Integer getServiceClusterManagerPort() {
-		return serviceAgentClusterManagerPort;
-	}
 	
 	@Override
 	protected void executeServiceStrategy() {
-		// TODO Auto-generated method stub
-		
+		for(ProcessDescriptor p : agentsChilds) {
+			p.execute();
+		}
 	}
 	
 	private Logger log = null;

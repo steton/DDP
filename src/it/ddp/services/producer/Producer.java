@@ -17,14 +17,12 @@ public class Producer extends AbstractService {
 		log.debug("Producer init...");
 		
 		configureWebServer();
-		configureProducer();
 		
 		// do what needed
 		InternalProcessRegistry<Producer> ir = InternalProcessRegistry.getInstance();
 		ir.subscribeAgent(this);
 		
 		startInternalServices();
-		startCommunicationServer();
 	}
 	
 	@Override
@@ -48,17 +46,20 @@ public class Producer extends AbstractService {
 	}
 	
 	@Override
-	protected void executeServiceStrategy() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	private void configureProducer() throws ConfigurationException {
+	protected void configureService() throws ConfigurationException {
 		XMLConfiguration conf = getConfig();	
 		producerName = conf.getString("producer[@name]", NONE_STRING);
 		producerClusterManagerHost = conf.getString("producer[@cmhost]", NONE_STRING);
 		producerClusterManagerPort = conf.getInteger("producer[@cmport]", null);
 	}
+	
+	@Override
+	protected void executeServiceStrategy() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 	
 	private Logger log = null;
 	

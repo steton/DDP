@@ -18,14 +18,12 @@ public class Consumer extends AbstractService {
 		log.debug("Consumer init...");
 		
 		configureWebServer();
-		configureConsumer();
 		
 		// do what needed
 		InternalProcessRegistry<Consumer> ir = InternalProcessRegistry.getInstance();
 		ir.subscribeAgent(this);
 		
 		startInternalServices();
-		startCommunicationServer();
 	}
 	
 	@Override
@@ -48,18 +46,22 @@ public class Consumer extends AbstractService {
 		return consumerClusterManagerPort;
 	}
 	
+	
+	@Override
+	protected void configureService() throws ConfigurationException {
+		XMLConfiguration conf = getConfig();	
+		consumerName = conf.getString("consumer[@name]", NONE_STRING);
+		consumerClusterManagerHost = conf.getString("consumer[@cmhost]", NONE_STRING);
+		consumerClusterManagerPort = conf.getInteger("consumer[@cmport]", null);
+	}
+	
+	
 	@Override
 	protected void executeServiceStrategy() {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	private void configureConsumer() throws ConfigurationException {
-		XMLConfiguration conf = getConfig();	
-		consumerName = conf.getString("consumer[@name]", NONE_STRING);
-		consumerClusterManagerHost = conf.getString("consumer[@cmhost]", NONE_STRING);
-		consumerClusterManagerPort = conf.getInteger("consumer[@cmport]", null);
-	}
 	
 	private Logger log = null;
 	

@@ -228,7 +228,7 @@ public abstract class AbstractService {
 	}
 
 	
-	protected void configureWebServer() {
+	protected void configureWebServer() throws Exception {
 		
 		QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setMaxThreads(serverPoolMaxThreads);
@@ -309,6 +309,8 @@ public abstract class AbstractService {
         contexts.setHandlers(new Handler[] { webContext, servletContext });
  
         server.setHandler(contexts);
+        
+        configureService();
 	}
 	
 	
@@ -317,9 +319,7 @@ public abstract class AbstractService {
 		startServiceSubscriber();
 		log.debug("Execute service strategy.");
 		executeServiceStrategy();
-	}
-	
-	protected void startCommunicationServer() throws Exception {
+		
 		server.start();
 		server.join();
 	}
@@ -353,6 +353,9 @@ public abstract class AbstractService {
 	
 	
 	abstract protected void executeServiceStrategy();
+	
+	
+	abstract protected void configureService() throws Exception;
 	
 	
 	private void startServiceSubscriber() {
