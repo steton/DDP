@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>DDP</title>
-</head>
-<body>
-<h2>PIPPO</h2>
-</body>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>DDP</title>
+		<script src="../js/react.production.min.js"></script>
+		<script src="../js/react-dom.production.min.js"></script>
+	</head>
+	<body>
+		<div id="container"></div>
+		
+		<script type="text/babel">
+        	var BuckysComponent = React.createClass({
+            	render: function() {
+                	return (<h2>This is a simple component</h2>);
+            	}
+        	});
+       		ReactDOM.render(<BuckysComponent />, document.getElementById('container'));
+    	</script>
+	</body>
 </html>
