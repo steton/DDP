@@ -20,6 +20,13 @@
     <!-- Custom styles for this template -->
     <link href="css/dashboard.css" rel="stylesheet">
 
+    <!-- Aimara tree library css -->
+    <link rel="stylesheet" type="text/css" href="css/Aimara.css">
+		<link rel="stylesheet" type="text/css" href="css/Example.css">
+
+    <!-- Aimara tree library menù -->
+		<script src="js/Aimara.js" type="text/javascript"></script>
+
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="js/ie-emulation-modes-warning.js"></script>
@@ -33,6 +40,152 @@
     <script src="js/react.production.min.js"></script>
     <script src="js/react-dom.production.min.js"></script>
     <script src="js/babel.js"></script>
+
+
+    <script type="text/javascript">
+			window.onload = function() {
+
+				//Initializing Tree
+
+				//Tree Context Menu Structure
+				var contex_menu = {
+					'context1' : {
+						elements : [
+							{
+								text : 'Node Actions',
+								icon: 'images/blue_key.png',
+								action : function(node) {
+								},
+								submenu: {
+									elements : [
+										{
+											text : 'Toggle Node',
+											icon: 'images/leaf.png',
+											action : function(node) {
+												node.toggleNode();
+											}
+										},
+										{
+											text : 'Expand Node',
+											icon: 'images/leaf.png',
+											action : function(node) {
+												node.expandNode();
+											}
+										},
+										{
+											text : 'Collapse Node',
+											icon: 'images/leaf.png',
+											action : function(node) {
+												node.collapseNode();
+											}
+										},
+										{
+											text : 'Expand Subtree',
+											icon: 'images/tree.png',
+											action : function(node) {
+												node.expandSubtree();
+											}
+										},
+										{
+											text : 'Collapse Subtree',
+											icon: 'images/tree.png',
+											action : function(node) {
+												node.collapseSubtree();
+											}
+										},
+										{
+											text : 'Delete Node',
+											icon: 'images/delete.png',
+											action : function(node) {
+												node.removeNode();
+											}
+										},
+									]
+								}
+							},
+							{
+								text : 'Child Actions',
+								icon: 'images/blue_key.png',
+								action : function(node) {
+
+								},
+								submenu: {
+									elements : [
+										{
+											text : 'Create Child Node',
+											icon: 'images/add1.png',
+											action : function(node) {
+												node.createChildNode('Created',false,'images/folder.png',null,'context1');
+											}
+										},
+										{
+											text : 'Create 1000 Child Nodes',
+											icon: 'images/add1.png',
+											action : function(node) {
+												for (var i=0; i<1000; i++)
+													node.createChildNode('Created -' + i,false,'images/folder.png',null,'context1');
+											}
+										},
+										{
+											text : 'Delete Child Nodes',
+											icon: 'images/delete.png',
+											action : function(node) {
+												node.removeChildNodes();
+											}
+										}
+									]
+								}
+							}
+						]
+					}
+				};
+
+				//Creating the tree
+				tree = createTree('div_tree','white',contex_menu);
+
+				//Setting custom events
+				tree.nodeBeforeOpenEvent = function(node) { }
+
+				tree.nodeAfterOpenEvent = function(node) { }
+
+				tree.nodeBeforeCloseEvent = function(node) { }
+
+				//Loop to create test nodes
+				for (var i=1; i<10; i++) {
+					node1 = tree.createNode('Level 0 - Node ' + i,false,'images/star.png',null,null,'context1');
+					for (var j=1; j<5; j++) {
+						node2 = node1.createChildNode('Level 1 - Node ' + j, false, 'images/blue_key.png',null,'context1');
+						/*for (var k=1; k<5; k++) {
+							node3 = node2.createChildNode('Level 2 - Node ' + k, false, 'images/monitor.png',null,'context1');
+							for (var l=1; l<5; l++) {
+								node4 = node3.createChildNode('Level 3 - Node ' + l, false, 'images/key_green.png',null,'context1');
+								for (var m=1; m<5; m++) {
+									node4.createChildNode('Level 4 - Node ' + m, false, 'images/file.png',null,'context1');
+								}
+							}
+						}*/
+					}
+				}
+
+				//Rendering the tree
+				tree.drawTree();
+
+				//Adding node after tree is already rendered
+				tree.createNode('<a href="http://www.google.com">Link to Google</a',false,'images/leaf.png',null,null,'context1');
+
+
+			};
+
+			function expand_all() {
+				tree.expandTree();
+			}
+
+			function collapse_all() {
+				tree.collapseTree();
+			}
+		</script>
+
+
   </head>
 
   <body>
@@ -109,6 +262,8 @@
             <li><a href="#">Analytics</a></li>
             <li><a href="#">Export</a></li>
           </ul>
+          <div id="div_tree" class="nav nav-sidebar"></div>
+          <!--
           <ul class="nav nav-sidebar">
             <li><a href="">Nav item</a></li>
             <li><a href="">Nav item again</a></li>
@@ -121,6 +276,7 @@
             <li><a href="">One more nav</a></li>
             <li><a href="">Another nav item</a></li>
           </ul>
+        -->
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Dashboard</h1>
@@ -288,7 +444,7 @@
        constructor(props) {
          super(props);
        }
-       
+
        getStyle(t) {
          if(t==="success") {
            return "alert alert-success alert-dismissible"

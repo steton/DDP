@@ -1,0 +1,7 @@
+
+#div_tree {
+	font: 10px Verdana, sans-serif;
+  display: inline-block;
+  width: 200px;
+  z-index: 1001;
+}
