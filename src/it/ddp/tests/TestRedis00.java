@@ -17,8 +17,8 @@ public class TestRedis00 {
 		
 		RedisExecProvider customProvider = RedisExecProvider.defaultProvider()
 			.override(OS.WINDOWS, Architecture.x86, "C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\lib\\redis\\redis-server-2.8.19-32.exe")
-			.override(OS.WINDOWS, Architecture.x86_64, "C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\lib\\redis\\redis-server-2.8.19.exe");
-			//	  .override(OS.UNIX, "/path/to/unix/redis")
+			.override(OS.WINDOWS, Architecture.x86_64, "C:\\Users\\esteton\\DEV\\WS-OXYGEN\\DDP\\lib\\redis\\redis-server-2.8.19.exe")
+			.override(OS.UNIX, Architecture.x86_64, "/home/tony/Documents/DEV/GIT/DDP/DDP/lib/redis/redis-server-2.8.19");
 			//	  .override(OS.MAC_OS_X, Architecture.x86, "/path/to/macosx/redis")
 			//	  .override(OS.MAC_OS_X, Architecture.x86_64, "/path/to/macosx/redis")
 		
